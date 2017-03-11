@@ -1,54 +1,62 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
+import { Provider } from 'react-redux';
+import store from './store/store';
+import Company from './containers/company';
+import CompanyList from './components/company/company';
+import LoginContainer from './containers/login';
 
-import Main from "./Container/Main";
-import Signup from "./Components/Signup";
-import App from "./Components/App";
+import SignUpContainer from './containers/signup';
+import rootMainContainer from './containers/rootContainer';
+import DashboardContainer from './containers/dashboard';
+import Student from './containers/student';
+import StudentData from './components/student/student';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {Router , Route , IndexRoute , browserHistory} from "react-router";
-import Login from "./Components/Signin" ;
-import Dashboard from "./Components/Dashboard" 
-import Home from "./Components/Home" ;
-import {Provider} from "react-redux";
-import {store} from "./Store/store"
-import {history} from "./Store/store"
-import firebase from "firebase"
-import requireds from "./required"
-import Profile from "./Components/profile"
-// import {firedux} from "./Server/index"
-// firebase.auth().onAuthStateChanged((user)=>{
- 
-//    if(user){   
-//      var uid = user.uid 
-// //      firedux.watch("users/"+uid)
-//      store.dispatch({
-//        type: "LoginSuccess",
-//        user
-//      })
-//      browserHistory.push("/dashboard")
-//          console.log(user.uid); 
-//    }
-//    else{
-//    }
-// })
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+import * as mat from 'material-ui';
 
+import {
+  browserHistory,
+  Router,
+  Route,
+  IndexRoute,
+  IndexRedirect,
+  Link,
+  IndexLink
+} from 'react-router';
 
+class RootComponent extends Component {
+  render() {
+    return (
+      <div>
+        <MuiThemeProvider>
+          <Provider store={store}>
+            <Router history={browserHistory}>
+              <Route path="/" component={rootMainContainer}>
+                <IndexRedirect to="/login" />
+                <Route path="/dashboard" component={DashboardContainer} />
+                <Route path="/student" component={Student} />
+                <Route path="/studentList" component={StudentData} />
+                 <Route path="/company" component={Company} />
+                <Route path="/companyData" component={CompanyList} />
+              </Route>
+              <Route path="/login" component={LoginContainer}>
+              </Route>
+              <Route path="/signup" component={SignUpContainer}>
+              </Route>
+            </Router>
+          </Provider>
+        </MuiThemeProvider>
+      </div>
+    );
+  }
+}
 
-ReactDOM.render(
-  <MuiThemeProvider>
-    <Provider store={store}>
-  <Router history = {history}>  
-    <Route path="/" component={Main}>
-    <IndexRoute component={Home}/>
-    <Route path ="signup" component={Signup} />
-    <Route path="signin" component={Login} />
- 
-    <Route path="dashboard:id" component={Dashboard} onEnter={requireds} />
-    <Route path="profile" component={Profile} onEnter={requireds} />
-      </Route>
-    </Router>
-    </Provider>
-    </MuiThemeProvider>,
+ReactDOM.render((
+  <RootComponent />
+),
   document.getElementById('root')
-
 );
